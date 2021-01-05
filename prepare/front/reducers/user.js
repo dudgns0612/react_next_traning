@@ -1,33 +1,36 @@
-// 액션 정의
-export const loginAction = (data) => ({
-  type: 'LOG_IN',
-  data,
-});
-
-export const logoutAction = () => ({
-  type: 'LOG_OUT',
-});
-
 export const initialState = {
   isLoggedIn: false,
-  user: null,
+  me: null,
   signUpData: {},
   loginData: {},
 };
 
+const LOG_IN = 'LOG_IN';
+const LOG_OUT = 'LOG_OUT';
+
+// 액션 정의
+export const loginAction = (data) => ({
+  type: LOG_IN,
+  data,
+});
+
+export const logoutAction = () => ({
+  type: LOG_OUT,
+});
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'LOG_IN':
+    case LOG_IN:
       return {
         ...state,
-        user: action.data,
+        me: action.data,
         isLoggedIn: true,
       };
-    case 'LOG_OUT':
+    case LOG_OUT:
       return {
         ...state,
         isLoggedIn: false,
-        user: null,
+        me: null,
       };
     default:
       return state;
