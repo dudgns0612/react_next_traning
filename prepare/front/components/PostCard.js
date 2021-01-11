@@ -11,14 +11,18 @@ import {
 } from '@ant-design/icons';
 import PostImages from '../components/PostImages';
 import CommentForm from '../components/CommentForm';
+import PostCardContent from '../components/PostCardContent';
 
 const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+
   const id = useSelector((state) => state.user.me?.id);
+
   const onToggleLike = useCallback(() => {
     setLiked((prev) => !prev);
   }, []);
+
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
@@ -57,12 +61,12 @@ const PostCard = ({ post }) => {
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
           title={post.User.nickname}
-          description={post.content}
+          description={<PostCardContent postData={post.content} />}
         />
       </Card>
       {commentFormOpened && (
         <div>
-          <CommentForm />
+          <CommentForm post={post} />
           <List
             header={`${post.Comments.length}개의 댓글`}
             itemLayout="horizontal"
@@ -79,8 +83,6 @@ const PostCard = ({ post }) => {
           />
         </div>
       )}
-      {/* 
-      <Comments /> */}
     </div>
   );
 };

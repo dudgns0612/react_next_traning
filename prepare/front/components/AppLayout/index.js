@@ -1,21 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import styled from 'styled-components';
 import Link from 'next/link';
-import { Menu, Input, Row, Col } from 'antd';
-import UserProfile from './UserProfile';
-import LoginForm from './LoginForm';
-
-const SearchInput = styled(Input.Search)`
-  vertical-align: middle;
-`;
+import { Menu, Row, Col } from 'antd';
+import UserProfile from '../UserProfile';
+import LoginForm from '../LoginForm';
+import { SearchInput, Global } from './styles';
 
 const AppLayout = ({ children }) => {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   return (
     <div>
+      <Global />
       <Menu mode="horizontal">
         <Menu.Item>
           <Link href="/">

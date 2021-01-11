@@ -14,6 +14,9 @@ export const initialState = {
         {
           src: 'https://homepages.cae.wisc.edu/~ece533/images/arctichare.png',
         },
+        {
+          src: 'https://homepages.cae.wisc.edu/~ece533/images/frymire.png',
+        },
       ],
       Comments: [
         {
