@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginAction } from '../reducers/user';
+import { useSelector, useDispatch } from 'react-redux';
+import { loginRequestAction } from '../reducers/user';
 import useInput from '../hooks/useInput';
 import Link from 'next/link';
 import { Form, Input, Button } from 'antd';
@@ -16,11 +16,12 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
   const [id, onChangeId] = useInput('');
+  const { isLoggingIn } = useSelector((state) => state.user);
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
 
   const onSubmitForm = useCallback(() => {
-    dispatch(loginAction({ id, password }));
+    dispatch(loginRequestAction({ id, password }));
   }, [id, password]);
 
   return (
@@ -42,7 +43,7 @@ const LoginForm = () => {
         />
       </div>
       <ButtonWrapper>
-        <Button type="primary" htmlType="submit" loading={false}>
+        <Button type="primary" htmlType="submit" loading={isLoggingIn}>
           로그인
         </Button>
         <Link href="/signup">
