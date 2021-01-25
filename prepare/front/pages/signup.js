@@ -1,4 +1,6 @@
 import React, { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signUpRequestAction } from '../reducers/user';
 import useInput from '../hooks/useInput';
 import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
@@ -10,7 +12,10 @@ const ErrorMessage = styled.div`
 `;
 
 const Signup = () => {
-  const [id, onChangeId] = useInput('');
+  const dispatch = useDispatch();
+  const { signUpLoading } = useSelector((state) => state.user);
+
+  const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
 
@@ -39,6 +44,14 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
+
+    dispatch(
+      signUpRequestAction({
+        email,
+        password,
+        nickname,
+      }),
+    );
   }, [password, term, passwordCheck]);
 
   return (
@@ -49,9 +62,9 @@ const Signup = () => {
       </Head>
       <Form onFinish={onSubmit}>
         <div>
-          <label htmlFor="user-id">아이디</label>
+          <label htmlFor="user-email">이메일</label>
           <br />
-          <Input name="user-id" value={id} required onChange={onChangeId} />
+          <Input name="user-email" type="email" value={email} required onChange={onChangeEmail} />
         </div>
         <div>
           <label htmlFor="user-nickname">닉네임</label>
@@ -86,7 +99,7 @@ const Signup = () => {
         </Checkbox>
         {termError && <div style={{ color: 'red' }}>약관에 동의하셔야 합니다.</div>}
         <div style={{ marginTop: 15 }}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={signUpLoading}>
             가입하기
           </Button>
         </div>

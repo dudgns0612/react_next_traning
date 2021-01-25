@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import { Menu, Row, Col } from 'antd';
-import UserProfile from '../UserProfile';
-import LoginForm from '../LoginForm';
 import { SearchInput, Global } from './styles';
 
+import UserProfile from '../UserProfile';
+import LoginForm from '../LoginForm';
+
 const AppLayout = ({ children }) => {
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const { me } = useSelector((state) => state.user);
 
   return (
     <div>
@@ -35,7 +36,7 @@ const AppLayout = ({ children }) => {
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {isLoggedIn ? <UserProfile /> : <LoginForm />}
+          {me ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12}>
           {children}

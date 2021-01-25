@@ -10,7 +10,6 @@ function logOutAPI() {
 }
 
 function* logIn(action) {
-  console.log(UserAction);
   try {
     // const result = yield call(logInAPI);
     yield delay(1000);
@@ -39,7 +38,7 @@ function* singUp() {
   } catch (err) {
     yield put({
       type: UserAction.SIGN_UP_FAILURE,
-      erorr: err.response.data,
+      error: err.response.data,
     });
   }
 }

@@ -1,21 +1,43 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import useInput from '../hooks/useInput';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, Input, Button } from 'antd';
+import { addCommentRequest } from '../reducers/post';
+import useInput from '../hooks/useInput';
 
 const CommentForm = ({ post }) => {
+  const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
-  const [commentText, onChangeCommentText] = useInput('');
+  const { addCommentLoading } = useSelector((state) => state.post);
+  const { addCommentDone } = useSelector((state) => state.post);
+  const [commentText, onChangeCommentText, setCommentText] = useInput('');
+
+  useEffect(() => {
+    if (addCommentDone) {
+      setCommentText('');
+    }
+  }, [addCommentDone]);
+
   const onSubmitContent = useCallback(() => {
-    console.log(post.id, commentText);
-  }, [commentText]);
+    dispatch(
+      addCommentRequest({
+        content: commentText,
+        postId: post.id,
+        userId: id,
+      }),
+    );
+  }, [commentText, id]);
 
   return (
     <Form onFinish={onSubmitContent}>
       <Form.Item>
         <Input.TextArea value={commentText} onChange={onChangeCommentText} />
-        <Button type="primary" htmlType="submit" style={{ float: 'right' }}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={addCommentLoading}
+          style={{ float: 'right' }}
+        >
           작성
         </Button>
       </Form.Item>
