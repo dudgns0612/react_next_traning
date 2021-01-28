@@ -1,43 +1,40 @@
 import shortId from 'shortid';
 import produce from 'immer';
+import faker from 'faker';
 
-export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
+export const generateDummyPost = (number) =>
+  Array(number)
+    .fill()
+    .map(() => ({
+      id: shortId.generate(),
       User: {
-        id: 1,
-        nickname: '제로초',
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
       },
-      content: '1 번째 게시글 #태그 #익스프레스',
+      content: faker.lorem.paragraph(),
       Images: [
         {
-          src: 'https://homepages.cae.wisc.edu/~ece533/images/airplane.png',
-        },
-        {
-          src: 'https://homepages.cae.wisc.edu/~ece533/images/arctichare.png',
-        },
-        {
-          src: 'https://homepages.cae.wisc.edu/~ece533/images/frymire.png',
+          src: faker.image.image(),
         },
       ],
       Comments: [
         {
           User: {
-            nickname: 'nero',
+            id: shortId.generate(),
+            nickname: faker.name.findName(),
           },
-          content: '테스트 댓글',
-        },
-        {
-          User: {
-            nickname: 'hoons',
-          },
-          content: '좋네요',
+          content: faker.lorem.sentence(),
         },
       ],
-    },
-  ],
+    }));
+
+export const initialState = {
+  mainPosts: [],
   imagePaths: [],
+  hasMorePost: true,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -48,6 +45,10 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 };
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -60,6 +61,10 @@ export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
+
+export const roadPostRequest = () => ({
+  type: LOAD_POST_REQUEST,
+});
 
 export const addPostRequest = (data) => ({
   type: ADD_POST_REQUEST,
@@ -99,6 +104,21 @@ const dummyComment = (data) => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPOstError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.hasMorePost = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPOstError = action.error;
+        break;
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;

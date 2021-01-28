@@ -13,6 +13,12 @@ export const initialState = {
   changeNicknameLoading: false, // 닉네임 변경
   changeNicknameDone: false,
   changeNicknameError: null,
+  followLoading: false, // 팔로우
+  followDone: false,
+  followError: null,
+  unFollowLoading: false, // 언팔로우
+  unFollowDone: false,
+  unFollowError: null,
   me: null,
   signUpData: {},
   logInData: {},
@@ -57,6 +63,16 @@ export const logOutRequestAction = () => ({
 
 export const signUpRequestAction = () => ({
   type: SIGN_UP_SUCCESS,
+});
+
+export const followRequestAction = (data) => ({
+  type: FOLLOW_REQUEST,
+  data,
+});
+
+export const unFollowRequestAction = (data) => ({
+  type: UNFOLLOW_REQUEST,
+  data,
 });
 
 const dummyUser = (data) => ({
@@ -130,6 +146,34 @@ const reducer = (state = initialState, action) =>
         break;
       case REMOVE_POST_TO_ME:
         draft.me.Posts = state.me.Posts.filter((post) => post.id !== action.data);
+        break;
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push(action.data);
+        break;
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
+        break;
+      case UNFOLLOW_REQUEST:
+        draft.unFollowLoading = true;
+        draft.unFollowDone = false;
+        draft.unFollowError = null;
+        break;
+      case UNFOLLOW_SUCCESS:
+        draft.unFollowLoading = false;
+        draft.unFollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter((following) => following !== action.data);
+        break;
+      case UNFOLLOW_FAILURE:
+        draft.unFollowLoading = false;
+        draft.unFollowError = action.error;
         break;
       default:
         break;

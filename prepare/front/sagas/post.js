@@ -1,10 +1,25 @@
-import { all, fork, put, delay, takeLatest } from 'redux-saga/effects';
+import { all, fork, put, delay, takeLatest, throttle } from 'redux-saga/effects';
 import shortId from 'shortid';
 import * as PostActions from '../reducers/post';
 import * as UserActions from '../reducers/user';
 
 function addPostAPI() {
   return; //axios.~
+}
+
+function* loadPost(action) {
+  try {
+    yield delay(1000);
+    yield put({
+      type: PostActions.LOAD_POST_SUCCESS,
+      data: PostActions.generateDummyPost(10),
+    });
+  } catch (err) {
+    yield put({
+      type: PostActions.LOAD_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
 }
 
 function* addPost(action) {
@@ -64,6 +79,10 @@ function* addComment(action) {
   }
 }
 
+function* watchLoadPost() {
+  yield throttle(5000, PostActions.LOAD_POST_REQUEST, loadPost);
+}
+
 function* watchAddPost() {
   yield takeLatest(PostActions.ADD_POST_REQUEST, addPost);
 }
@@ -77,7 +96,12 @@ function* watchAddComment() {
 }
 
 function* postSaga() {
-  yield all([fork(watchAddPost), fork(watchAddComment), fork(watchRemovePost)]);
+  yield all([
+    fork(watchLoadPost),
+    fork(watchAddPost),
+    fork(watchAddComment),
+    fork(watchRemovePost),
+  ]);
 }
 
 export default postSaga;
