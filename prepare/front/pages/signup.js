@@ -1,11 +1,12 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { signUpRequestAction } from '../reducers/user';
-import useInput from '../hooks/useInput';
-import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
 import { Form, Input, Checkbox, Button } from 'antd';
 import styled from 'styled-components';
+import { signUpRequestAction, SIGN_UP_DONE_RESET } from '../reducers/user';
+import useInput from '../hooks/useInput';
+import AppLayout from '../components/AppLayout';
 
 const ErrorMessage = styled.div`
   color: red;
@@ -13,7 +14,7 @@ const ErrorMessage = styled.div`
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -53,6 +54,19 @@ const Signup = () => {
       }),
     );
   }, [password, term, passwordCheck]);
+
+  useEffect(() => {
+    if (signUpDone) {
+      dispatch({ type: SIGN_UP_DONE_RESET });
+      Router.push('/');
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
 
   return (
     <AppLayout>

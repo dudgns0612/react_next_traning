@@ -1,19 +1,11 @@
-import { all, fork, takeLatest, put, delay } from 'redux-saga/effects';
+import { all, fork, takeLatest, put, delay, call } from 'redux-saga/effects';
 import * as UserAction from '../reducers/user';
-
-function logInAPI() {
-  return; //axios.~
-}
-
-function logOutAPI() {
-  return; //axios.~
-}
+import userService from '../api/user';
 
 function* logIn(action) {
   try {
-    // const result = yield call(logInAPI);
-    yield delay(1000);
-    yield put({ type: UserAction.LOG_IN_SUCCESS, data: action.data });
+    const result = yield call(userService.logInAPI, action.data);
+    yield put({ type: UserAction.LOG_IN_SUCCESS, data: result.data });
   } catch (err) {
     yield put({ type: UserAction.LOG_IN_FAILURE, error: err.response.data });
   }
@@ -29,9 +21,9 @@ function* logOut() {
   }
 }
 
-function* singUp() {
+function* singUp(action) {
   try {
-    yield delay(1000);
+    yield call(userService.singUpAPI, action.data);
     yield put({
       type: UserAction.SIGN_UP_SUCCESS,
     });
@@ -83,7 +75,7 @@ function* watchLogOut() {
 }
 
 function* watchSignUp() {
-  yield takeLatest(UserAction.LOG_OUT_REQUEST, singUp);
+  yield takeLatest(UserAction.SIGN_UP_REQUEST, singUp);
 }
 
 function* watchFollow() {

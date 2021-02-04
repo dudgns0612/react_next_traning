@@ -35,6 +35,7 @@ export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
+export const SIGN_UP_DONE_RESET = 'SIGN_UP_DONE_RESET';
 
 export const CHANGE_NICKNAME_REQUEST = 'CHNAGE_NICKNAME_REQUEST';
 export const CHANGE_NICKNAME_SUCCESS = 'CHNAGE_NICKNAME_SUCCESS';
@@ -61,8 +62,9 @@ export const logOutRequestAction = () => ({
   type: LOG_OUT_REQUEST,
 });
 
-export const signUpRequestAction = () => ({
-  type: SIGN_UP_SUCCESS,
+export const signUpRequestAction = (data) => ({
+  type: SIGN_UP_REQUEST,
+  data,
 });
 
 export const followRequestAction = (data) => ({
@@ -95,7 +97,7 @@ const reducer = (state = initialState, action) =>
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
+        draft.me = action.data;
         break;
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
@@ -127,6 +129,9 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
         draft.signUpError = action.error;
+        break;
+      case SIGN_UP_DONE_RESET:
+        draft.signUpDone = false;
         break;
       case CHANGE_NICKNAME_REQUEST:
         draft.changeNicknameLoading = true;
