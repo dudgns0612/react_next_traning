@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,13 +17,19 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
   const [email, onChangeEmail] = useInput('');
-  const { logInLoading } = useSelector((state) => state.user);
+  const { logInLoading, logInError } = useSelector((state) => state.user);
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
 
   const onSubmitForm = useCallback(() => {
     dispatch(logInRequestAction({ email, password }));
   }, [email, password, dispatch]);
+
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError]);
 
   return (
     <FormWrapper onFinish={onSubmitForm}>

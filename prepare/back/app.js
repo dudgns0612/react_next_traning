@@ -49,6 +49,11 @@ passportConfig();
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 
+// 에러처리 미들웨어는 기본적으로 처리되어있다.
+// 에러페이지를 따로 띄워주거나 할때 생성
+// app.use((err, req, res, next)=>{
+// })
+
 app.listen(3065, () => {
   console.log('서버 구동중...');
 });

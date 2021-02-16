@@ -77,15 +77,6 @@ export const unFollowRequestAction = (data) => ({
   data,
 });
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: 'kim',
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [],
-  Followers: [],
-});
-
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
@@ -111,6 +102,7 @@ const reducer = (state = initialState, action) =>
       case LOG_OUT_SUCCESS:
         draft.logOutLoading = false;
         draft.logOutDone = true;
+        draft.logInDone = false;
         draft.me = null;
         break;
       case LOG_OUT_FAILURE:

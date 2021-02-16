@@ -9,7 +9,7 @@ import UserProfile from '../UserProfile';
 import LoginForm from '../LoginForm';
 
 const AppLayout = ({ children }) => {
-  const { me } = useSelector((state) => state.user);
+  const { me, logInDone } = useSelector((state) => state.user);
 
   return (
     <div>
@@ -29,9 +29,11 @@ const AppLayout = ({ children }) => {
           <SearchInput enterButton />
         </Menu.Item>
         <Menu.Item>
-          <Link href="/signup">
-            <a>회원가입</a>
-          </Link>
+          {logInDone || (
+            <Link href="/signup">
+              <a>회원가입</a>
+            </Link>
+          )}
         </Menu.Item>
       </Menu>
       <Row gutter={8}>

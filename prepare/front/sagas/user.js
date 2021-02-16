@@ -13,7 +13,7 @@ function* logIn(action) {
 
 function* logOut() {
   try {
-    // const result = yield call(logOutAPI);
+    yield call(userService.logOutAPI);
     yield delay(1000);
     yield put({ type: UserAction.LOG_OUT_SUCCESS });
   } catch (err) {
@@ -36,7 +36,6 @@ function* singUp(action) {
 }
 
 function* follow(action) {
-  console.log(action);
   try {
     yield delay(1000);
     yield put({

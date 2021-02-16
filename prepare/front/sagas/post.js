@@ -1,11 +1,7 @@
-import { all, fork, put, delay, takeLatest, throttle } from 'redux-saga/effects';
-import shortId from 'shortid';
+import { all, fork, put, delay, takeLatest, throttle, call } from 'redux-saga/effects';
 import * as PostActions from '../reducers/post';
 import * as UserActions from '../reducers/user';
-
-function addPostAPI() {
-  return; //axios.~
-}
+import postService from '../api/post';
 
 function* loadPost(action) {
   try {
@@ -22,20 +18,17 @@ function* loadPost(action) {
   }
 }
 
+// 포스트 등록
 function* addPost(action) {
-  const id = shortId.generate();
   try {
-    yield delay(1000);
+    const result = yield call(postService.addPostAPI, action.data);
     yield put({
       type: PostActions.ADD_POST_SUCCESS,
-      data: {
-        id,
-        content: action.data,
-      },
+      data: result.data,
     });
     yield put({
       type: UserActions.ADD_POST_TO_ME,
-      data: id,
+      data: result.data.id,
     });
   } catch (err) {
     yield put({
@@ -64,12 +57,13 @@ function* removePost(action) {
   }
 }
 
+// 댓글 등록
 function* addComment(action) {
   try {
-    yield delay(1000);
+    const result = call(postService.addCommentAPI, action.data);
     yield put({
       type: PostActions.ADD_COMMENT_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
