@@ -1,13 +1,25 @@
-const { Post, Comment } = require('../../models');
+const { Post, Comment, User, Image } = require('../../models');
 
-const getPosts = async (req, res, next) => {
+const createPost = async (req, res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
 
-    res.status(201).json(post);
+    const fullPost = await Post.findOne({
+      where: { id: post.id },
+      include: [
+        { model: Image },
+        { model: Comment },
+        {
+          model: User,
+          attributes: ['id', 'nickname'],
+        },
+      ],
+    });
+
+    res.status(201).json(fullPost);
   } catch (error) {
     console.error(error);
     return next(error);
@@ -29,18 +41,35 @@ const addComment = async (req, res, next) => {
 
     const comment = await Comment.create({
       content: req.body.content,
-      PostId: req.params.postId,
+      PostId: parseInt(req.params.postId),
       UserId: req.user.id,
     });
 
-    res.status(201).json(comment);
+    const fullComment = await Comment.findOne({
+      where: {
+        id: comment.id,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'nickname'],
+        },
+      ],
+    });
+
+    res.status(201).json(fullComment);
   } catch (error) {
     console.error(error);
     return next(error);
   }
 };
 
+const deletePost = (req, res, next) => {
+  res.json({ id: 1 });
+};
+
 module.exports = {
-  getPosts,
+  createPost,
   addComment,
+  deletePost,
 };

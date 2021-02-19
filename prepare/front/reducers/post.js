@@ -1,32 +1,4 @@
-import shortId from 'shortid';
 import produce from 'immer';
-import faker from 'faker';
-
-export const generateDummyPost = (number) =>
-  Array(number)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-      },
-      content: faker.lorem.paragraph(),
-      Images: [
-        {
-          src: faker.image.image(),
-        },
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-          },
-          content: faker.lorem.sentence(),
-        },
-      ],
-    }));
 
 export const initialState = {
   mainPosts: [],
@@ -62,21 +34,21 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
-export const roadPostRequest = () => ({
+export const loadPostRequestAction = () => ({
   type: LOAD_POST_REQUEST,
 });
 
-export const addPostRequest = (data) => ({
+export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
   data,
 });
 
-export const removePostRequest = (data) => ({
+export const removePostRequestAction = (data) => ({
   type: REMOVE_POST_REQUEST,
   data,
 });
 
-export const addCommentRequest = (data) => ({
+export const addCommentRequestAction = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,
 });

@@ -12,7 +12,7 @@ import {
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
-import { removePostRequest } from '../reducers/post';
+import { removePostRequestAction } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 const PostCard = ({ post }) => {
@@ -32,7 +32,7 @@ const PostCard = ({ post }) => {
   }, []);
 
   const onRemoveClick = useCallback(() => {
-    dispatch(removePostRequest(post.id));
+    dispatch(removePostRequestAction(post.id));
   }, [post]);
 
   return (
@@ -103,7 +103,7 @@ PostCard.propTypes = {
     id: PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
-    createAt: PropTypes.object,
+    createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,

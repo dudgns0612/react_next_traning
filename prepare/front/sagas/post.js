@@ -2,13 +2,14 @@ import { all, fork, put, delay, takeLatest, throttle, call } from 'redux-saga/ef
 import * as PostActions from '../reducers/post';
 import * as UserActions from '../reducers/user';
 import postService from '../api/post';
+import postsService from '../api/posts';
 
 function* loadPost(action) {
   try {
-    yield delay(1000);
+    const result = yield call(postsService.loadPostsAPI, action.data);
     yield put({
       type: PostActions.LOAD_POST_SUCCESS,
-      data: PostActions.generateDummyPost(10),
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -60,12 +61,13 @@ function* removePost(action) {
 // 댓글 등록
 function* addComment(action) {
   try {
-    const result = call(postService.addCommentAPI, action.data);
+    const result = yield call(postService.addCommentAPI, action.data);
     yield put({
       type: PostActions.ADD_COMMENT_SUCCESS,
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: PostActions.ADD_COMMENT_FAILURE,
       error: err.response.data,

@@ -67,6 +67,40 @@ const logInUser = (req, res, next) => {
   })(req, res, next);
 };
 
+// 사용자 조회
+const getUser = async (req, res, next) => {
+  try {
+    if (req.user) {
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        attributes: { exclude: ['passwrod'] },
+        include: [
+          {
+            model: Post,
+            attributes: ['id'],
+          },
+          {
+            model: User,
+            as: 'Followings',
+            attributes: ['id'],
+          },
+          {
+            model: User,
+            as: 'Followers',
+            attributes: ['id'],
+          },
+        ],
+      });
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(200).json();
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 // 유저 로그아웃
 const logOutUser = (req, res) => {
   req.logout();
@@ -78,4 +112,5 @@ module.exports = {
   createUser,
   logInUser,
   logOutUser,
+  getUser,
 };

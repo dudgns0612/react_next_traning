@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
-import { roadPostRequest } from '../reducers/post';
+import { loadMyInfoRequestAction } from '../reducers/user';
+import { loadPostRequestAction } from '../reducers/post';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -11,7 +12,8 @@ const Home = () => {
   const { mainPosts, hasMorePost, loadPostLoading } = useSelector((state) => state.post);
 
   useEffect(() => {
-    dispatch(roadPostRequest());
+    dispatch(loadMyInfoRequestAction());
+    dispatch(loadPostRequestAction());
   }, []);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const Home = () => {
         document.documentElement.scrollHeight - 300
       ) {
         if ((hasMorePost, !loadPostLoading)) {
-          dispatch(roadPostRequest());
+          dispatch(loadPostRequestAction());
         }
       }
     }

@@ -4,20 +4,23 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 
 const db = require('./models');
 const passportConfig = require('./passport');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
 
 const app = express();
+
 dotenv.config();
 
 // cross origin 설정
 app.use(
   cors({
-    origin: '*',
-    credentials: false,
+    origin: 'http://localhost:3000',
+    credentials: true, // cros 자격증명 적용
   })
 );
 
@@ -35,6 +38,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(morgan('dev'));
 
 db.sequelize
   .sync()
@@ -46,8 +50,9 @@ db.sequelize
 // passport 설정
 passportConfig();
 
-app.use('/post', postRouter);
 app.use('/user', userRouter);
+app.use('/post', postRouter);
+app.use('/posts', postsRouter);
 
 // 에러처리 미들웨어는 기본적으로 처리되어있다.
 // 에러페이지를 따로 띄워주거나 할때 생성

@@ -35,6 +35,21 @@ function* singUp(action) {
   }
 }
 
+function* loadMyInfo() {
+  try {
+    const result = yield call(userService.loadUerAPI);
+    yield put({
+      type: UserAction.LOAD_MY_INFO_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UserAction.LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* follow(action) {
   try {
     yield delay(1000);
@@ -77,6 +92,10 @@ function* watchSignUp() {
   yield takeLatest(UserAction.SIGN_UP_REQUEST, singUp);
 }
 
+function* watchLoadMyInfo() {
+  yield takeLatest(UserAction.LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+
 function* watchFollow() {
   yield takeLatest(UserAction.FOLLOW_REQUEST, follow);
 }
@@ -90,6 +109,7 @@ function* userSaga() {
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp),
+    fork(watchLoadMyInfo),
     fork(watchFollow),
     fork(watchUnFollow),
   ]);
