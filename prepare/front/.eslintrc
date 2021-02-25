@@ -30,6 +30,7 @@
     "react/require-default-props": "off",
     "implicit-arrow-linebreak": "off",
     "consistent-return": "off",
-    "comma-dangle": "off"
+    "comma-dangle": "off",
+    "no-case-declarations": "off"
   }
 }

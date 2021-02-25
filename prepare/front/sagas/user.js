@@ -50,12 +50,13 @@ function* loadMyInfo() {
   }
 }
 
+// 유저 팔로우
 function* follow(action) {
   try {
-    yield delay(1000);
+    const result = yield call(userService.followAPI, action.data);
     yield put({
       type: UserAction.FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -65,16 +66,81 @@ function* follow(action) {
   }
 }
 
+// 유저 언팔로우
 function* unFollow(action) {
   try {
-    yield delay(1000);
+    const result = yield call(userService.unfollowAPI, action.data);
     yield put({
       type: UserAction.UNFOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
       type: UserAction.UNFOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 유저 언팔로우
+function* removeFollower(action) {
+  try {
+    const result = yield call(userService.removeFollowerAPI, action.data);
+    yield put({
+      type: UserAction.REMOVE_FOLLOWER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UserAction.REMOVE_FOLLOWER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 닉네임 변경
+function* changeNickname(action) {
+  try {
+    const result = yield call(userService.changeUserNicknameAPI, action.data);
+    yield put({
+      type: UserAction.CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UserAction.CHANGE_NICKNAME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 팔로워 조회
+function* loadFollowers() {
+  try {
+    const result = yield call(userService.loadFollowersAPI);
+    yield put({
+      type: UserAction.LOAD_FOLLOWERS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UserAction.LOAD_FOLLOWERS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 팔로잉 조회
+function* loadFollowings() {
+  try {
+    const result = yield call(userService.loadFollowingsAPI);
+    yield put({
+      type: UserAction.LOAD_FOLLOWINGS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UserAction.LOAD_FOLLOWINGS_FAILURE,
       error: err.response.data,
     });
   }
@@ -104,6 +170,22 @@ function* watchUnFollow() {
   yield takeLatest(UserAction.UNFOLLOW_REQUEST, unFollow);
 }
 
+function* watchRemoveFollower() {
+  yield takeLatest(UserAction.REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
+
+function* wetchChangeNickname() {
+  yield takeLatest(UserAction.CHANGE_NICKNAME_REQUEST, changeNickname);
+}
+
+function* wetchLoadFollowers() {
+  yield takeLatest(UserAction.LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+function* wetchLoadFollowings() {
+  yield takeLatest(UserAction.LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+
 function* userSaga() {
   yield all([
     fork(watchLogIn),
@@ -112,6 +194,10 @@ function* userSaga() {
     fork(watchLoadMyInfo),
     fork(watchFollow),
     fork(watchUnFollow),
+    fork(watchRemoveFollower),
+    fork(wetchChangeNickname),
+    fork(wetchLoadFollowers),
+    fork(wetchLoadFollowings),
   ]);
 }
 

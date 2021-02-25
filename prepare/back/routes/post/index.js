@@ -4,7 +4,9 @@ const ctrl = require('./post.ctrl');
 const { isLoggedIn } = require('../middlewares');
 
 router.post('/', isLoggedIn, ctrl.createPost);
-router.post('/:postId/comment', isLoggedIn, ctrl.addComment);
-router.delete('/', isLoggedIn, ctrl.deletePost);
+router.delete('/:postId', isLoggedIn, ctrl.deletePost);
+router.post('/:postId/comment', isLoggedIn, ctrl.createComment);
+router.patch('/:postId/like', isLoggedIn, ctrl.likePost);
+router.delete('/:postId/like', isLoggedIn, ctrl.unlikePost);
 
 module.exports = router;
