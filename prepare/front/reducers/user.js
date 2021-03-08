@@ -13,9 +13,12 @@ export const initialState = {
   changeNicknameLoading: false, // 닉네임 변경
   changeNicknameDone: false,
   changeNicknameError: null,
-  loadMyInfoLoading: false, // 로그인 정보
+  loadMyInfoLoading: false, // 로그인 유저 정보
   loadMyInfoDone: false,
   loadMyInfoError: null,
+  loadUserLoading: false, // 유저 정보
+  loadUserDone: false,
+  loadUserError: null,
   followLoading: false, // 팔로우
   followDone: false,
   followError: null,
@@ -32,8 +35,7 @@ export const initialState = {
   loadFollowingsDone: false,
   loadFollowingsError: null,
   me: null,
-  signUpData: {},
-  logInData: {},
+  userInfo: null,
 };
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
@@ -56,6 +58,10 @@ export const CHANGE_NICKNAME_FAILURE = 'CHNAGE_NICKNAME_FAILURE';
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
 
 export const FOLLOW_REQUEST = 'FOLLOW_REQUEST';
 export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS';
@@ -97,6 +103,11 @@ export const signUpRequestAction = (data) => ({
 
 export const loadMyInfoRequestAction = (data) => ({
   type: LOAD_MY_INFO_REQUEST,
+  data,
+});
+
+export const loadUserRequestAction = (data) => ({
+  type: LOAD_USER_REQUEST,
   data,
 });
 
@@ -209,6 +220,20 @@ const reducer = (state = initialState, action) =>
       case LOAD_MY_INFO_FAILURE:
         draft.loadMyInfoLoading = false;
         draft.loadMyInfoError = action.error;
+        break;
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break;
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.userInfo = action.data;
+        draft.loadUserDone = true;
+        break;
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
         break;
       case FOLLOW_REQUEST:
         draft.followLoading = true;

@@ -81,13 +81,15 @@ const logInUser = (req, res, next) => {
           },
         ],
       });
+
+      // 내부적으로 쿠키 값 헤더에 저장
       return res.status(200).json(fullUserWithoutPassword);
     });
   })(req, res, next);
 };
 
 // 사용자 조회
-const getUser = async (req, res, next) => {
+const geMyInfotUser = async (req, res, next) => {
   try {
     if (req.user) {
       const fullUserWithoutPassword = await User.findOne({
@@ -113,6 +115,46 @@ const getUser = async (req, res, next) => {
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json();
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 사용자 조회
+const getUser = async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: { exclude: ['passwrod'] },
+      include: [
+        {
+          model: Post,
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followings',
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followers',
+          attributes: ['id'],
+        },
+      ],
+    });
+
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length;
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+
+      res.status(200).json(data);
+    } else {
+      res.status(404).json('존재하지 않는 사용자입니다.');
     }
   } catch (error) {
     console.error(error);
@@ -216,6 +258,7 @@ module.exports = {
   updateUserNickname,
   logInUser,
   logOutUser,
+  geMyInfotUser,
   getUser,
   getFollowers,
   getFollowings,

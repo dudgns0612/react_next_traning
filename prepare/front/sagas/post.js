@@ -107,6 +107,38 @@ function* unlikePost(action) {
   }
 }
 
+function* uploadImages(action) {
+  try {
+    const result = yield call(postService.uploadImagesAPI, action.data);
+    yield put({
+      type: PostActions.UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PostActions.UPLOAD_IMAGES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* retweet(action) {
+  try {
+    const result = yield call(postService.retweetAPI, action.data);
+    yield put({
+      type: PostActions.RETWEET_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: PostActions.RETWEET_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPost() {
   yield throttle(5000, PostActions.LOAD_POST_REQUEST, loadPost);
 }
@@ -131,6 +163,14 @@ function* watchUnlikePost() {
   yield takeLatest(PostActions.UNLIKE_POST_REQUEST, unlikePost);
 }
 
+function* watchUploadImages() {
+  yield takeLatest(PostActions.UPLOAD_IMAGES_REQUEST, uploadImages);
+}
+
+function* watchRetweet() {
+  yield takeLatest(PostActions.RETWEET_REQUEST, retweet);
+}
+
 function* postSaga() {
   yield all([
     fork(watchLoadPost),
@@ -139,6 +179,8 @@ function* postSaga() {
     fork(watchRemovePost),
     fork(watchLikePost),
     fork(watchUnlikePost),
+    fork(watchUploadImages),
+    fork(watchRetweet),
   ]);
 }
 

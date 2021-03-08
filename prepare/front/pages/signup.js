@@ -2,11 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
+import { END } from 'redux-saga';
+import axios from 'axios';
 import { Form, Input, Checkbox, Button } from 'antd';
 import styled from 'styled-components';
-import { signUpRequestAction, SIGN_UP_DONE_RESET } from '../reducers/user';
+import { signUpRequestAction, SIGN_UP_DONE_RESET, loadMyInfoRequestAction } from '../reducers/user';
 import useInput from '../hooks/useInput';
 import AppLayout from '../components/AppLayout';
+import { loadPostRequestAction } from '../reducers/post';
+import wrapper from '../store/configureStore';
 
 const ErrorMessage = styled.div`
   color: red;
@@ -127,5 +131,22 @@ const Signup = () => {
     </AppLayout>
   );
 };
+
+// 화면을 그리기전에 실행됨.
+// 실행 결과를 Hydrate로 전달함.
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+
+  console.log('server side context : ', context);
+  context.store.dispatch(loadMyInfoRequestAction());
+  context.store.dispatch(loadPostRequestAction());
+  // request가 끝날때 까지 기다린다.
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+});
 
 export default Signup;

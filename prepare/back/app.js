@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const path = require('path');
 
 const db = require('./models');
 const passportConfig = require('./passport');
@@ -24,6 +25,8 @@ app.use(
   })
 );
 
+// express에서 정적파일 제공
+app.use('/images', express.static(path.join(__dirname, 'uploads')));
 // req 데이터 포맷 미들웨어 설정
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

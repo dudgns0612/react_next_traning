@@ -37,7 +37,7 @@ function* singUp(action) {
 
 function* loadMyInfo() {
   try {
-    const result = yield call(userService.loadUerAPI);
+    const result = yield call(userService.loadMyInfoAPI);
     yield put({
       type: UserAction.LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -45,6 +45,22 @@ function* loadMyInfo() {
   } catch (err) {
     yield put({
       type: UserAction.LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(userService.loadUserAPI, action.data);
+    yield put({
+      type: UserAction.LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UserAction.LOAD_USER_FAILURE,
       error: err.response.data,
     });
   }
@@ -162,6 +178,10 @@ function* watchLoadMyInfo() {
   yield takeLatest(UserAction.LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
 
+function* watchLoadUser() {
+  yield takeLatest(UserAction.LOAD_USER_REQUEST, loadUser);
+}
+
 function* watchFollow() {
   yield takeLatest(UserAction.FOLLOW_REQUEST, follow);
 }
@@ -192,6 +212,7 @@ function* userSaga() {
     fork(watchLogOut),
     fork(watchSignUp),
     fork(watchLoadMyInfo),
+    fork(watchLoadUser),
     fork(watchFollow),
     fork(watchUnFollow),
     fork(watchRemoveFollower),
