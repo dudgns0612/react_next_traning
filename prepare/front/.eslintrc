@@ -13,7 +13,7 @@
     "es6": true
   },
   "extends": ["airbnb"],
-  "plugins": ["import", "react-hooks"],
+  "plugins": ["import", "react-hooks", "jsx-a11y"],
   "rules": {
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/anchor-is-valid": "off",
@@ -30,7 +30,7 @@
     "react/require-default-props": "off",
     "implicit-arrow-linebreak": "off",
     "consistent-return": "off",
-    "comma-dangle": "off",
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    "react/jsx-props-no-spreading": "off"
   }
 }

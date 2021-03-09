@@ -2,11 +2,10 @@ import { all, fork, put, takeLatest, throttle, call } from 'redux-saga/effects';
 import * as PostActions from '../reducers/post';
 import * as UserActions from '../reducers/user';
 import postService from '../api/post';
-import postsService from '../api/posts';
 
 function* loadPost(action) {
   try {
-    const result = yield call(postsService.loadPostsAPI, action.data);
+    const result = yield call(postService.loadPostAPI, action.data);
     yield put({
       type: PostActions.LOAD_POST_SUCCESS,
       data: result.data,
@@ -14,6 +13,21 @@ function* loadPost(action) {
   } catch (err) {
     yield put({
       type: PostActions.LOAD_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* loadPosts(action) {
+  try {
+    const result = yield call(postService.loadPostsAPI, action.data);
+    yield put({
+      type: PostActions.LOAD_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: PostActions.LOAD_POSTS_FAILURE,
       error: err.response.data,
     });
   }
@@ -140,7 +154,11 @@ function* retweet(action) {
 }
 
 function* watchLoadPost() {
-  yield throttle(5000, PostActions.LOAD_POST_REQUEST, loadPost);
+  yield takeLatest(PostActions.LOAD_POST_REQUEST, loadPost);
+}
+
+function* watchLoadPosts() {
+  yield throttle(5000, PostActions.LOAD_POSTS_REQUEST, loadPosts);
 }
 
 function* watchAddPost() {
@@ -174,6 +192,7 @@ function* watchRetweet() {
 function* postSaga() {
   yield all([
     fork(watchLoadPost),
+    fork(watchLoadPosts),
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),

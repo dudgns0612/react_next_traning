@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { signUpRequestAction, SIGN_UP_DONE_RESET, loadMyInfoRequestAction } from '../reducers/user';
 import useInput from '../hooks/useInput';
 import AppLayout from '../components/AppLayout';
-import { loadPostRequestAction } from '../reducers/post';
+import { loadPostsRequestAction } from '../reducers/post';
 import wrapper from '../store/configureStore';
 
 const ErrorMessage = styled.div`
@@ -143,7 +143,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
 
   console.log('server side context : ', context);
   context.store.dispatch(loadMyInfoRequestAction());
-  context.store.dispatch(loadPostRequestAction());
+  context.store.dispatch(loadPostsRequestAction());
   // request가 끝날때 까지 기다린다.
   context.store.dispatch(END);
   await context.store.sagaTask.toPromise();

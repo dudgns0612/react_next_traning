@@ -31,6 +31,7 @@ const upload = multer({
 });
 
 router.post('/', isLoggedIn, upload.none(), ctrl.createPost);
+router.get('/:postId', ctrl.getPost);
 router.delete('/:postId', isLoggedIn, ctrl.deletePost);
 router.post('/:postId/comment', isLoggedIn, ctrl.createComment);
 router.patch('/:postId/like', isLoggedIn, ctrl.likePost);

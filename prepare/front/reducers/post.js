@@ -2,12 +2,16 @@ import produce from 'immer';
 
 export const initialState = {
   mainPosts: [],
+  singlePost: null,
   imagePaths: [],
   hasMorePost: true,
   loadPostLoading: false,
   loadPostDone: false,
   loadPostError: null,
-  likePostLoading: false,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
+  likePostsLoading: false,
   likePostDone: false,
   likePostError: null,
   unlikePostLoading: false,
@@ -42,6 +46,10 @@ export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
 export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
+export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
+export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
+export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
@@ -64,6 +72,16 @@ export const RETWEET_FAILURE = 'RETWEET_FAILURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
+export const loadPostRequestAction = (data) => ({
+  type: LOAD_POST_REQUEST,
+  data,
+});
+
+export const loadPostsRequestAction = (data) => ({
+  type: LOAD_POSTS_REQUEST,
+  data,
+});
+
 export const likePostRequestAction = (data) => ({
   type: LIKE_POST_REQUEST,
   data,
@@ -71,11 +89,6 @@ export const likePostRequestAction = (data) => ({
 
 export const unlikePostRequestAction = (data) => ({
   type: UNLIKE_POST_REQUEST,
-  data,
-});
-
-export const loadPostRequestAction = (data) => ({
-  type: LOAD_POST_REQUEST,
   data,
 });
 
@@ -115,17 +128,31 @@ const reducer = (state = initialState, action) =>
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
-        draft.loadPOstError = null;
+        draft.loadPostError = null;
         break;
       case LOAD_POST_SUCCESS:
-        draft.mainPosts = draft.mainPosts.concat(action.data);
         draft.loadPostLoading = false;
         draft.loadPostDone = true;
-        draft.hasMorePost = action.data.length === 10;
+        draft.singlePost = action.data;
         break;
       case LOAD_POST_FAILURE:
         draft.loadPostLoading = false;
-        draft.loadPOstError = action.error;
+        draft.loadPostError = action.error;
+        break;
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POSTS_SUCCESS:
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        draft.hasMorePost = action.data.length === 10;
+        break;
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
         break;
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -172,18 +199,18 @@ const reducer = (state = initialState, action) =>
         draft.addCommentError = action.error;
         break;
       case LIKE_POST_REQUEST:
-        draft.likePostLoading = true;
+        draft.likePostsLoading = true;
         draft.likePostDone = false;
         draft.likePOstError = null;
         break;
       case LIKE_POST_SUCCESS:
         const likePost = draft.mainPosts.find((post) => post.id === action.data.PostId);
         likePost.Likers.push({ id: action.data.UserId });
-        draft.likePostLoading = false;
+        draft.likePostsLoading = false;
         draft.likePostDone = true;
         break;
       case LIKE_POST_FAILURE:
-        draft.likePostLoading = false;
+        draft.likePostsLoading = false;
         draft.likePOstError = action.error;
         break;
       case UNLIKE_POST_REQUEST:
